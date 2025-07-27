@@ -20,7 +20,7 @@ app.get("/employee", (req, res) => {
   res.render("pages/employee", { employees });
 });
 
-// ✅ Add employee with terminal log
+
 app.post("/add-employee", (req, res) => {
   const { id, name, email, phone, role, department, balance, level } = req.body;
 
@@ -38,22 +38,23 @@ app.post("/add-employee", (req, res) => {
 
   employees.push(newEmployee);
 
-  // 🖨️ Clean terminal log
+
   console.log("[ADD] New Employee:");
-  console.log(JSON.stringify(newEmployee, null, 2)); // pretty print
+  console.log(JSON.stringify(newEmployee, null, 2));
   console.log("------------------------------");
 
   res.redirect("/employee");
 });
 
-// Edit employee
+
 app.post("/edit-employee", (req, res) => {
   const updated = req.body;
   const index = employees.findIndex(emp => emp.id === updated.id);
 
   if (index !== -1) {
-    employees[index] = {
-      ...employees[index],
+    const oldData = employees[index];
+    const newData = {
+      ...oldData,
       name: updated.name,
       email: updated.email,
       phone: updated.phone,
@@ -62,19 +63,37 @@ app.post("/edit-employee", (req, res) => {
       balance: updated.balance,
       level: updated.level
     };
+
+    employees[index] = newData;
+
+
+    console.log(`[EDIT] Employee ID: ${updated.id}`);
+    console.log("Before:", JSON.stringify(oldData, null, 2));
+    console.log("After :", JSON.stringify(newData, null, 2));
+    console.log("------------------------------");
   }
 
   res.redirect("/employee");
 });
 
-// Delete employee
+
 app.delete("/delete/:id", (req, res) => {
   const empId = req.params.id;
-  employees = employees.filter(emp => emp.id !== empId);
-  res.json({ success: true });
+  const employee = employees.find(emp => emp.id === empId);
+
+  if (employee) {
+    employees = employees.filter(emp => emp.id !== empId);
+
+    console.log(`[DELETE] Employee ID: ${empId}`);
+    console.log(JSON.stringify(employee, null, 2));
+    console.log("------------------------------");
+
+    res.json({ success: true });
+  } else {
+    res.status(404).json({ success: false, message: "Employee not found" });
+  }
 });
 
-// Task Management
 app.get("/taskManagement", (req, res) => {
   res.render("pages/taskManagement", { tasks });
 });
@@ -95,11 +114,15 @@ app.post("/assign-task", (req, res) => {
   };
 
   tasks.push(task);
+
+  console.log(`[TASK ASSIGNED] To: ${task.employeeName} (${employeeId})`);
+  console.log(JSON.stringify(task, null, 2));
+  console.log("------------------------------");
+
   res.redirect("/taskManagement");
 });
 
-// Start server
 app.listen(port, () => {
-  console.log("Server STARTED successfully");
+  console.log(" Server STARTED successfully");
   console.log(`Server running at http://localhost:` + port);
 });
