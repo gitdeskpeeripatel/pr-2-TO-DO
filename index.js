@@ -5,7 +5,7 @@ const app = express();
 const port = 5055;
 
 let employees = []; // store employee data in-memory
-let tasks = []; // store task data in-memory
+let tasks = [];     // store task data in-memory
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
@@ -20,7 +20,7 @@ app.get("/employee", (req, res) => {
   res.render("pages/employee", { employees });
 });
 
-// Add employee
+// ✅ Add employee with terminal log
 app.post("/add-employee", (req, res) => {
   const { id, name, email, phone, role, department, balance, level } = req.body;
 
@@ -37,6 +37,12 @@ app.post("/add-employee", (req, res) => {
   };
 
   employees.push(newEmployee);
+
+  // 🖨️ Clean terminal log
+  console.log("[ADD] New Employee:");
+  console.log(JSON.stringify(newEmployee, null, 2)); // pretty print
+  console.log("------------------------------");
+
   res.redirect("/employee");
 });
 
@@ -57,6 +63,7 @@ app.post("/edit-employee", (req, res) => {
       level: updated.level
     };
   }
+
   res.redirect("/employee");
 });
 
@@ -91,7 +98,8 @@ app.post("/assign-task", (req, res) => {
   res.redirect("/taskManagement");
 });
 
+// Start server
 app.listen(port, () => {
   console.log("Server STARTED successfully");
-  console.log(`Server running at http://localhost:`+port);
+  console.log(`Server running at http://localhost:` + port);
 });
