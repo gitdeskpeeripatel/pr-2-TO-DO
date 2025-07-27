@@ -123,6 +123,6 @@ app.post("/assign-task", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(" Server STARTED successfully");
+  console.log("Server STARTED successfully");
   console.log(`Server running at http://localhost:` + port);
 });
